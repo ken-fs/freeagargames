@@ -2,41 +2,41 @@
 
 @layer base {
   :root {
-    /* Softer Gaming Theme - Cool Dark Gray */
-    --background: 220 15% 10%;
+    /* Deep Purple Gaming Theme */
+    --background: 270 25% 8%;
     --foreground: 0 0% 98%;
-    --card: 220 14% 14%;
+    --card: 270 20% 12%;
     --card-foreground: 0 0% 98%;
-    --popover: 220 15% 12%;
+    --popover: 270 25% 10%;
     --popover-foreground: 0 0% 98%;
 
-    /* Primary - Bright Cyan Blue (Cool Gaming) */
-    --primary: 195 100% 55%;
-    --primary-foreground: 220 15% 10%;
+    /* Primary - Vibrant Orange (Energy & Action) */
+    --primary: 25 95% 58%;
+    --primary-foreground: 0 0% 100%;
 
-    /* Secondary - Vibrant Purple */
-    --secondary: 270 80% 60%;
+    /* Secondary - Electric Purple */
+    --secondary: 270 85% 65%;
     --secondary-foreground: 0 0% 100%;
 
-    /* Accent - Electric Pink */
-    --accent: 330 90% 60%;
+    /* Accent - Cyan Blue */
+    --accent: 190 100% 60%;
     --accent-foreground: 0 0% 100%;
 
-    --muted: 220 12% 20%;
-    --muted-foreground: 0 0% 65%;
+    --muted: 270 15% 18%;
+    --muted-foreground: 0 0% 68%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 220 12% 22%;
-    --input: 220 12% 18%;
-    --ring: 195 100% 55%;
+    --border: 270 15% 20%;
+    --input: 270 15% 16%;
+    --ring: 25 95% 58%;
 
-    /* Chart colors - Cool Vibrant Palette */
-    --chart-1: 195 100% 55%;
-    --chart-2: 270 80% 60%;
-    --chart-3: 330 90% 60%;
-    --chart-4: 160 84% 39%;
+    /* Chart colors - Purple Gaming Palette */
+    --chart-1: 25 95% 58%;
+    --chart-2: 270 85% 65%;
+    --chart-3: 190 100% 60%;
+    --chart-4: 330 85% 60%;
     --chart-5: 45 93% 58%;
 
     --radius: 0.875rem;

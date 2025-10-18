@@ -1,0 +1,32 @@
+# robots.txt for Free Agar Games
+# Generated for optimal SEO performance
+
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /_next/static/
+
+# Sitemap location
+Sitemap: https://freeagargames.live/sitemap.xml
+
+# Major search engines
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Slurp
+Allow: /
+
+# Block bad bots
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10
