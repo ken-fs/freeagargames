@@ -1,5 +1,8 @@
 import { MetadataRoute } from 'next'
 
+// Ensure this metadata route is statically generated for `output: 'export'`
+export const dynamic = 'force-static'
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://freeagargames.live'
   const currentDate = new Date()
