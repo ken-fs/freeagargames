@@ -3,8 +3,20 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import {
+  featuredGames,
+  popularIOGames,
+  casualGames,
+  getTrendingGames,
+  getNewGames,
+  type Game,
+} from "@/constants/games";
+import { GameCard, GameCardCompact, GameListItem } from "@/components/GameCard";
 
 export default function Home() {
+  // Current Game State
+  const [currentGame, setCurrentGame] = useState<Game>(featuredGames[0]);
+
   // Rating System State
   const [averageRating, setAverageRating] = useState(4.5);
   const [totalVotes, setTotalVotes] = useState(278);
@@ -21,6 +33,13 @@ export default function Home() {
       setUserRating(ratings.userRating || 0);
     }
   }, []);
+
+  // Handle game selection
+  const handleGameSelect = (game: Game) => {
+    setCurrentGame(game);
+    // Scroll to game section
+    document.getElementById('play')?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   // Handle user rating
   const handleRating = (rating: number) => {
@@ -62,135 +81,11 @@ export default function Home() {
       );
     }
   };
-  const newGames = [
-    {
-      name: "Cookie Clicker",
-      image: "🍪",
-      rating: 5,
-      bgColor: "from-amber-500/30 to-orange-500/30",
-    },
-    {
-      name: "BloodMoney",
-      image: "💰",
-      rating: 5,
-      bgColor: "from-purple-500/30 to-pink-500/30",
-    },
-    {
-      name: "Ragdoll Playground",
-      image: "🎯",
-      rating: 5,
-      bgColor: "from-red-500/30 to-rose-500/30",
-    },
-    {
-      name: "Shadow Milk [Fixed Pets]",
-      image: "🧫",
-      rating: 4,
-      bgColor: "from-blue-500/30 to-cyan-500/30",
-    },
-    {
-      name: "Subway Moto",
-      image: "🏍️",
-      rating: 5,
-      bgColor: "from-yellow-500/30 to-amber-500/30",
-    },
-    {
-      name: "Bloodmoney 2",
-      image: "💸",
-      rating: 5,
-      bgColor: "from-fuchsia-500/30 to-purple-500/30",
-    },
-    {
-      name: "Labubu Clicker",
-      image: "🎮",
-      rating: 5,
-      bgColor: "from-indigo-500/30 to-blue-500/30",
-    },
-    {
-      name: "Golden Cheese Cookie!",
-      image: "🧀",
-      rating: 4.9,
-      bgColor: "from-orange-500/30 to-yellow-500/30",
-    },
-    {
-      name: "Galaxy Clicker",
-      image: "🌌",
-      rating: 5,
-      bgColor: "from-purple-500/30 to-violet-500/30",
-    },
-    {
-      name: "Shadow Milk Cookie",
-      image: "🍪",
-      rating: 5,
-      bgColor: "from-slate-500/30 to-gray-500/30",
-    },
-    {
-      name: "Chicken Flip",
-      image: "🐔",
-      rating: 5,
-      bgColor: "from-green-500/30 to-emerald-500/30",
-    },
-    {
-      name: "Silent Salt",
-      image: "🧂",
-      rating: 4.5,
-      bgColor: "from-purple-500/30 to-indigo-500/30",
-    },
-    {
-      name: "Bunny Farm",
-      image: "🐰",
-      rating: 5,
-      bgColor: "from-pink-500/30 to-rose-500/30",
-    },
-    {
-      name: "Monkey Mart",
-      image: "🐵",
-      rating: 5,
-      bgColor: "from-cyan-500/30 to-teal-500/30",
-    },
-    {
-      name: "Escape Bear",
-      image: "🐻",
-      rating: 5,
-      bgColor: "from-lime-500/30 to-green-500/30",
-    },
-    {
-      name: "Eternal Sugar",
-      image: "🍬",
-      rating: 4.8,
-      bgColor: "from-violet-500/30 to-purple-500/30",
-    },
-  ];
 
-  const featuredGames = [
-    {
-      name: "Classic Agar.io",
-      desc: "Original multiplayer",
-      image: "🧫",
-      rating: 4.8,
-      bgColor: "from-blue-500/30 to-cyan-500/30",
-    },
-    {
-      name: "Agar.io Teams",
-      desc: "Team strategy",
-      image: "🎯",
-      rating: 4.6,
-      bgColor: "from-purple-500/30 to-pink-500/30",
-    },
-    {
-      name: "Agar.io FFA",
-      desc: "Free for all",
-      image: "⚔️",
-      rating: 4.9,
-      bgColor: "from-orange-500/30 to-red-500/30",
-    },
-    {
-      name: "Agar.io Experimental",
-      desc: "New features",
-      image: "🔬",
-      rating: 4.7,
-      bgColor: "from-green-500/30 to-emerald-500/30",
-    },
-  ];
+  // Get game lists
+  const newGames = getNewGames();
+  const trendingGames = getTrendingGames();
+  const ioGames = popularIOGames.slice(0, 12); // Show first 12 IO games
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -297,46 +192,57 @@ export default function Home() {
             <div className="flex-1 space-y-6">
               {/* Game Info Header */}
               <div className="flex items-start gap-4">
-                <div className="w-20 h-20 rounded-2xl overflow-hidden border-2 border-primary/30 shadow-lg shadow-primary/10 flex-shrink-0">
-                  <Image
-                    src="/agarpaper.io.jpg"
-                    alt="Agar Paper.io"
-                    width={80}
-                    height={80}
-                    className="w-full h-full object-cover"
-                  />
+                <div className={`w-20 h-20 rounded-2xl overflow-hidden border-2 border-primary/30 shadow-lg shadow-primary/10 flex-shrink-0 bg-gradient-to-br ${currentGame.bgColor} flex items-center justify-center`}>
+                  <div className="text-5xl">
+                    {currentGame.image}
+                  </div>
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2 flex-wrap">
                     <h1 className="text-3xl md:text-4xl font-bold">
-                      Agar Paper.io
+                      {currentGame.name}
                     </h1>
                     <span className="bg-muted/50 text-foreground px-3 py-1 rounded-full text-sm font-semibold border border-border/50">
                       Verified
                     </span>
+                    {currentGame.trending && (
+                      <span className="bg-orange-500/20 text-orange-500 px-3 py-1 rounded-full text-sm font-semibold border border-orange-500/30">
+                        🔥 Trending
+                      </span>
+                    )}
+                    {currentGame.new && (
+                      <span className="bg-green-500/20 text-green-500 px-3 py-1 rounded-full text-sm font-semibold border border-green-500/30">
+                        ✨ New
+                      </span>
+                    )}
                   </div>
                   <div className="flex items-center gap-2 mb-3">
                     <div className="flex items-center gap-1 text-yellow-400 text-sm">
                       <span>⭐</span>
-                      <span className="font-semibold">{averageRating}</span>
+                      <span className="font-semibold">{currentGame.rating}</span>
                     </div>
+                    <span className="text-muted-foreground text-sm">•</span>
+                    <span className="text-muted-foreground text-sm">{currentGame.players}</span>
+                    <span className="text-muted-foreground text-sm">•</span>
+                    <span className="text-muted-foreground text-sm">{currentGame.difficulty}</span>
                   </div>
                   <div className="flex flex-wrap gap-2 text-sm">
-                    <span className="px-3 py-1 rounded-full border border-border/50 text-muted-foreground hover:border-primary/50 hover:text-foreground transition-colors cursor-pointer">
-                      IO Games
-                    </span>
-                    <span className="px-3 py-1 rounded-full border border-border/50 text-muted-foreground hover:border-primary/50 hover:text-foreground transition-colors cursor-pointer">
-                      Multiplayer
-                    </span>
-                    <span className="px-3 py-1 rounded-full border border-border/50 text-muted-foreground hover:border-primary/50 hover:text-foreground transition-colors cursor-pointer">
-                      Casual Games
-                    </span>
-                    <span className="px-3 py-1 rounded-full border border-border/50 text-muted-foreground hover:border-primary/50 hover:text-foreground transition-colors cursor-pointer">
-                      Arena Games
-                    </span>
-                    <span className="px-3 py-1 rounded-full border border-border/50 text-muted-foreground hover:border-primary/50 hover:text-foreground transition-colors cursor-pointer">
-                      Trending
-                    </span>
+                    {currentGame.category.map((cat) => (
+                      <span
+                        key={cat}
+                        className="px-3 py-1 rounded-full border border-border/50 text-muted-foreground hover:border-primary/50 hover:text-foreground transition-colors cursor-pointer"
+                      >
+                        {cat}
+                      </span>
+                    ))}
+                    {currentGame.tags.slice(0, 3).map((tag) => (
+                      <span
+                        key={tag}
+                        className="px-3 py-1 rounded-full border border-border/50 text-muted-foreground hover:border-primary/50 hover:text-foreground transition-colors cursor-pointer"
+                      >
+                        {tag}
+                      </span>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -348,9 +254,10 @@ export default function Home() {
               >
                 <div className="aspect-video w-full bg-muted/30 relative">
                   <iframe
-                    src="https://iogames.onl/agarpaperio.embed"
+                    key={currentGame.id}
+                    src={currentGame.iframeUrl || "https://agar.io"}
                     className="w-full h-full"
-                    title="Play Agar Paper.io Online Free"
+                    title={currentGame.title}
                     allowFullScreen
                     loading="eager"
                     id="game-iframe"
@@ -382,6 +289,36 @@ export default function Home() {
                       <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
                     </svg>
                   </button>
+                  {/* Open in New Tab Button */}
+                  <a
+                    href={currentGame.iframeUrl || "https://agar.io"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="absolute top-4 right-20 bg-black/70 hover:bg-black/90 text-white p-3 rounded-lg transition-all opacity-0 group-hover:opacity-100 hover:scale-110 shadow-lg z-10 flex items-center gap-2"
+                    title="Open in New Tab"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                      <polyline points="15 3 21 3 21 9" />
+                      <line x1="10" y1="14" x2="21" y2="3" />
+                    </svg>
+                  </a>
+                </div>
+                {/* Game Description */}
+                <div className="p-4 bg-muted/20 border-t border-border/30">
+                  <p className="text-sm text-muted-foreground">
+                    {currentGame.description}
+                  </p>
                 </div>
               </section>
 
@@ -611,6 +548,35 @@ export default function Home() {
                 </p>
               </section>
 
+              {/* Trending IO Games Section */}
+              <section
+                id="io-games"
+                className="bg-card rounded-2xl p-8 border border-border/50 shadow-lg"
+              >
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl md:text-3xl font-bold flex items-center gap-3">
+                    <span className="text-3xl">🔥</span>
+                    <span>Trending IO Games</span>
+                  </h2>
+                  <Link
+                    href="#all-games"
+                    className="text-primary hover:text-primary/80 transition-colors text-sm font-semibold"
+                  >
+                    View All →
+                  </Link>
+                </div>
+
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {ioGames.map((game) => (
+                    <GameCard
+                      key={game.id}
+                      game={game}
+                      onClick={handleGameSelect}
+                    />
+                  ))}
+                </div>
+              </section>
+
               {/* New Games Section */}
               <section
                 id="new-games"
@@ -619,44 +585,17 @@ export default function Home() {
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-2xl md:text-3xl font-bold flex items-center gap-3">
                     <span className="text-3xl">🎮</span>
-                    <span>New Games</span>
+                    <span>New & Casual Games</span>
                   </h2>
-                  <div className="flex gap-2">
-                    <button className="w-10 h-10 rounded-lg bg-muted hover:bg-muted/80 border border-border/50 flex items-center justify-center transition-all hover:shadow-lg">
-                      ←
-                    </button>
-                    <button className="w-10 h-10 rounded-lg bg-muted hover:bg-muted/80 border border-border/50 flex items-center justify-center transition-all hover:shadow-lg">
-                      →
-                    </button>
-                  </div>
                 </div>
 
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   {newGames.map((game) => (
-                    <Link
-                      key={game.name}
-                      href="#"
-                      className="group bg-muted/30 border border-border/50 rounded-xl overflow-hidden hover:border-orange-500/50 hover:shadow-xl hover:shadow-orange-500/10 transition-all transform hover:scale-105"
-                    >
-                      <div
-                        className={`aspect-video bg-gradient-to-br ${game.bgColor} flex items-center justify-center border-b border-border/50`}
-                      >
-                        <div className="text-5xl group-hover:scale-110 transition-transform">
-                          {game.image}
-                        </div>
-                      </div>
-                      <div className="p-3">
-                        <h3 className="font-bold text-sm mb-2 group-hover:text-orange-500 transition-colors line-clamp-1">
-                          {game.name}
-                        </h3>
-                        <div className="flex items-center gap-1">
-                          <span className="text-primary text-sm">⭐</span>
-                          <span className="text-sm font-semibold">
-                            {game.rating}
-                          </span>
-                        </div>
-                      </div>
-                    </Link>
+                    <GameCard
+                      key={game.id}
+                      game={game}
+                      onClick={handleGameSelect}
+                    />
                   ))}
                 </div>
               </section>
@@ -800,40 +739,40 @@ export default function Home() {
                 )}
               </div>
 
-              {/* Featured Games */}
+              {/* Featured IO Games */}
               <div className="bg-card rounded-2xl p-6 border border-border/50 shadow-lg">
-                <h3 className="text-xl font-bold mb-4">Featured Games</h3>
+                <h3 className="text-xl font-bold mb-4">Featured IO Games</h3>
                 <div className="grid grid-cols-2 gap-3">
                   {featuredGames.map((game) => (
-                    <Link
-                      key={game.name}
-                      href="#"
-                      className="group block bg-muted/30 rounded-xl overflow-hidden hover:ring-2 hover:ring-primary/50 transition-all hover:shadow-lg"
-                    >
-                      <div
-                        className={`aspect-square bg-gradient-to-br ${game.bgColor} flex items-center justify-center border-b border-border/50`}
-                      >
-                        <div className="text-4xl group-hover:scale-110 transition-transform">
-                          {game.image}
-                        </div>
-                      </div>
-                      <div className="p-2">
-                        <h4 className="font-bold text-xs mb-1 group-hover:text-orange-500 transition-colors line-clamp-1">
-                          {game.name}
-                        </h4>
-                        <div className="flex items-center justify-between text-xs">
-                          <p className="text-muted-foreground line-clamp-1">
-                            {game.desc}
-                          </p>
-                          <div className="flex items-center gap-0.5">
-                            <span className="text-primary">⭐</span>
-                            <span className="font-semibold">{game.rating}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </Link>
+                    <GameCardCompact
+                      key={game.id}
+                      game={game}
+                      onClick={handleGameSelect}
+                    />
                   ))}
                 </div>
+              </div>
+
+              {/* Popular IO Games Quick Links */}
+              <div className="bg-card rounded-2xl p-6 border border-border/50 shadow-lg">
+                <h3 className="text-xl font-bold mb-4">Popular IO Games</h3>
+                <div className="space-y-2">
+                  {popularIOGames.slice(0, 8).map((game) => (
+                    <GameListItem
+                      key={game.id}
+                      game={game}
+                      onClick={handleGameSelect}
+                    />
+                  ))}
+                </div>
+                <button
+                  onClick={() => {
+                    document.getElementById('io-games')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="block w-full mt-4 text-center text-sm text-primary hover:text-primary/80 font-semibold transition-colors"
+                >
+                  View All IO Games →
+                </button>
               </div>
             </aside>
           </div>
@@ -886,38 +825,72 @@ export default function Home() {
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4">Popular Games</h4>
+              <h4 className="font-semibold mb-4">Popular IO Games</h4>
+              <ul className="space-y-2 text-sm">
+                {popularIOGames.slice(0, 6).map((game) => (
+                  <li key={game.id}>
+                    <Link
+                      href={`#${game.id}`}
+                      className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-2"
+                      title={game.title}
+                    >
+                      <span>{game.image}</span>
+                      <span>{game.name}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="font-semibold mb-4">Game Categories</h4>
               <ul className="space-y-2 text-sm">
                 <li>
                   <Link
-                    href="#"
+                    href="#io-games"
                     className="text-muted-foreground hover:text-primary transition-colors"
                   >
-                    Slither.io
+                    🔥 Trending IO Games
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="#"
+                    href="#new-games"
                     className="text-muted-foreground hover:text-primary transition-colors"
                   >
-                    Diep.io
+                    🎮 New Games
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="#"
+                    href="#play"
                     className="text-muted-foreground hover:text-primary transition-colors"
                   >
-                    Paper.io
+                    ⚔️ Battle Royale Games
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="#"
+                    href="#play"
                     className="text-muted-foreground hover:text-primary transition-colors"
                   >
-                    Krunker.io
+                    🎯 Shooter Games
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="#play"
+                    className="text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    🏕️ Survival Games
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="#tips"
+                    className="text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    😊 Casual Games
                   </Link>
                 </li>
               </ul>
@@ -932,6 +905,14 @@ export default function Home() {
                     className="text-muted-foreground hover:text-primary transition-colors"
                   >
                     About Us
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="#faq"
+                    className="text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    FAQ
                   </Link>
                 </li>
                 <li>
@@ -962,16 +943,26 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="pt-8 border-t border-border/50 text-center">
-            <p className="text-sm text-muted-foreground">
-              &copy; {new Date().getFullYear()} Free Agar Games. All rights
-              reserved. | Play the best free Agar.io games online - No
-              downloads, just fun!
-            </p>
-            <p className="text-xs text-muted-foreground mt-2">
-              Agar.io is a trademark of Miniclip. This site is not affiliated
-              with Miniclip.
-            </p>
+          <div className="pt-8 border-t border-border/50">
+            {/* SEO Keywords Section */}
+            <div className="mb-6 text-center">
+              <p className="text-xs text-muted-foreground leading-relaxed max-w-4xl mx-auto">
+                <strong className="text-foreground">Popular IO Games:</strong> Agar.io, Slither.io, Diep.io, Krunker.io, Moomoo.io, Paper.io, Zombs Royale, Surviv.io, Hole.io, Wings.io, Deeeep.io, Starve.io, Wilds.io, Shellshock.io, Arrow.io, Splix.io, Brutal.io, Wormax.io |
+                <strong className="text-foreground ml-2">Play Free:</strong> Multiplayer IO games, Battle Royale games, Shooter games, Survival games, Casual browser games |
+                <strong className="text-foreground ml-2">No Download:</strong> Unblocked games, Free online games 2025, Browser games, HTML5 games
+              </p>
+            </div>
+
+            <div className="text-center">
+              <p className="text-sm text-muted-foreground">
+                &copy; {new Date().getFullYear()} Free Agar Games. All rights
+                reserved. | Play the best free IO games online - No
+                downloads, just fun!
+              </p>
+              <p className="text-xs text-muted-foreground mt-2">
+                Agar.io, Slither.io, Diep.io and other game names are trademarks of their respective owners. This site is not affiliated with any game developers.
+              </p>
+            </div>
           </div>
         </div>
       </footer>
